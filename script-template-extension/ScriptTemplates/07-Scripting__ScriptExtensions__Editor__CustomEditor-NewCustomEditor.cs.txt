@@ -1,0 +1,16 @@
+#if UNITY_EDITOR
+
+using UnityEditor;
+using UnityEngine;
+
+    #ROOTNAMESPACEBEGIN#
+// [CustomEditor(typeof(YourComponentType))]
+public class #SCRIPTNAME# : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+    }
+}#ROOTNAMESPACEEND#
+
+#endif

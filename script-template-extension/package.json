@@ -1,0 +1,14 @@
+{
+  "name": "com.entertainment-software.script-template-extension",
+  "version": "1.0.0",
+  "displayName": "Script Template Extension",
+  "description": "This package provides a series of templates for creating new scripts.",
+  "unity": "6000.0",
+  "dependencies": {
+  },
+  "author": {
+    "name": "David Nicklas",
+    "email": "david.nicklas@entertainment-software.com",
+    "url": "https://www.entertainment-software.com"
+  }
+}
