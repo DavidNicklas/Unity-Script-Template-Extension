@@ -2,6 +2,8 @@
 
 using System.IO;
 using UnityEditor;
+using UnityEditor.PackageManager;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 namespace ENSO.ScriptTemplateExtensions.Editor
@@ -11,9 +13,14 @@ namespace ENSO.ScriptTemplateExtensions.Editor
         [MenuItem("ScriptExtensions/Setup Script Templates")]
         public static void SetupScriptTemplates()
         {
-            string sourcePath = Path.Combine(Application.dataPath, "../Packages/script-template-extension/ScriptTemplates");
-            if (!Directory.Exists(sourcePath))
+            string sourcePath = GetPackageScriptTemplatesPath("com.entertainment-software.script-template-extension");
+            if (!string.IsNullOrEmpty(sourcePath) && Directory.Exists(sourcePath))
             {
+                Debug.Log($"ScriptTemplates found at: {sourcePath}");
+            }
+            else
+            {
+                Debug.Log($"ScriptTemplates not found at: {sourcePath}");
                 Debug.LogWarning("ScriptTemplates directory not found. Make sure the package is installed correctly.");
                 return;
             }
@@ -41,6 +48,35 @@ namespace ENSO.ScriptTemplateExtensions.Editor
             {
                 Debug.LogWarning("[ScriptTemplates] directory already exist.");
             }
+        }
+
+        public static string GetPackageScriptTemplatesPath(string packageName)
+        {
+            // Request information about the installed packages
+            ListRequest request = Client.List(true); // true includes local paths
+            while (!request.IsCompleted)
+            {
+                System.Threading.Thread.Sleep(100); // Wait until the request is completed
+            }
+
+            if (request.Status == StatusCode.Success)
+            {
+                foreach (var package in request.Result)
+                {
+                    if (package.name == packageName)
+                    {
+                        // Return the path to the package's ScriptTemplates folder
+                        string packagePath = package.resolvedPath;
+                        return Path.Combine(packagePath, "ScriptTemplates");
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError($"Failed to retrieve package list: {request.Error.message}");
+            }
+
+            return null; // Package not found
         }
     }
 }
